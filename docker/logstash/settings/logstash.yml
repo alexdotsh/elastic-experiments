@@ -1,0 +1,8 @@
+http.host: "0.0.0.0"
+xpack.monitoring.elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+pipeline:
+  batch:
+    size: ${BATCH_SIZE:125}
+    delay: ${BATCH_DELAY:50}
+config.reload.automatic: true
+config.reload.interval: 2
