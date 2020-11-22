@@ -1,14 +1,19 @@
-setup.kibana:
-  host: 'kibana:5601'
-
 filebeat.inputs:
   - type: log
     enabled: true
     paths:
       - /var/log/*.log
-    json.keys_under_root: true
-    json.add_error_key: true
-    json.message_key: log
 
 output.logstash:
-  hosts: ['logstash:5044']
+  hosts: 'logstash:5044'
+
+# output.elasticsearch:
+#   hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+#   username: '${ELASTICSEARCH_USERNAME:elastic}'
+#   password: '${ELASTICSEARCH_PASSWORD:changeme}'
+
+# setup.kibana:
+#   host: 'kibana:5601'
+
+# filebeat.modules:
+#   - module: system
