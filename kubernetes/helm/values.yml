@@ -1,0 +1,59 @@
+---
+image: arm64v8/elasticsearch
+imageTag: "7.9.3"
+imagePullPolicy: "IfNotPresent"
+
+clusterName: "elasticsearch"
+nodeGroup: "master"
+antiAffinity: "soft"
+
+esJavaOpts: "-Xmx128m -Xms128m"
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512M"
+  limits:
+    cpu: "1000m"
+    memory: "512M"
+
+volumeClaimTemplate:
+  storageClassName: hostpath
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 2Gi
+  selector:
+    matchLabels:
+      type: hostpath
+
+persistence:
+  enabled: true
+
+nodeAffinity:
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: NotIn
+            values:
+              - slave-node-2
+
+replicas: 3
+minimumMasterNodes: 3
+
+esConfig:
+  elasticsearch.yml: |
+    node.max_local_storage_nodes: 2
+
+# extraEnvs:
+#   - name: ELASTIC_PASSWORD
+#     valueFrom:
+#       secretKeyRef:
+#         name: elastic-credentials
+#         key: password
+#   - name: ELASTIC_USERNAME
+#     valueFrom:
+#       secretKeyRef:
+#         name: elastic-credentials
+#         key: username
