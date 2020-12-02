@@ -40,3 +40,17 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: /usr/share/elasticsearch/data/nodes
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: logstash-logstash-0
+spec:
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: hostpath
+  capacity: 
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /usr/share/logstash/data
