@@ -12,8 +12,5 @@ output.logstash:
 #   username: '${ELASTICSEARCH_USERNAME:elastic}'
 #   password: '${ELASTICSEARCH_PASSWORD:changeme}'
 
-# setup.kibana:
-#   host: 'kibana:5601'
-
 # filebeat.modules:
 #   - module: system
