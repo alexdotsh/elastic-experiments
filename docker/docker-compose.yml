@@ -54,6 +54,7 @@ services:
   kibana:
     image: docker.elastic.co/kibana/kibana:7.10.0
     container_name: kibana
+    hostname: kibana
     depends_on:
       elasticsearch:
         condition: service_healthy
@@ -86,28 +87,27 @@ services:
       - 5044:5044 # default beats port
       - 9600:9600 # node web api port
 
-  # apm:
-  #   image: docker.elastic.co/apm/apm-server:7.10.0
-  #   depends_on:
-  #     elasticsearch:
-  #       condition: service_healthy
-  #     kibana:
-  #       condition: service_healthy
-  #   cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
-  #   cap_drop: ['ALL']
-  #   ports:
-  #     - 8200:8200
-  #   networks:
-  #     - elastic
-  #   command: >
-  #     apm-server -e
-  #       -E setup.kibana.host=kibana:5601
-  #   volumes:
-  #     - ./apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml
-  #   healthcheck:
-  #     interval: 10s
-  #     retries: 12
-  #     test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+  apm:
+    image: docker.elastic.co/apm/apm-server:7.10.0
+    container_name: apm
+    hostname: apm
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
+    cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
+    cap_drop: ['ALL']
+    ports:
+      - 8200:8200
+    networks:
+      - elastic
+    volumes:
+      - ./apm-server/apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
 
   filebeat:
     image: docker.elastic.co/beats/filebeat:7.10.0
@@ -117,18 +117,25 @@ services:
         condition: service_healthy
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - filebeat_data:/usr/share/filebeat/data/
     networks:
       - elastic
 
-  # metricbeat:
-  #   image: docker.elastic.co/beats/metricbeat:7.10.0
-  #   networks:
-  #     - elastic
-    # environment:
-    #   - ELASTICSEARCH_HOST=http://elasticsearch:9200
-    #   - KIBANA_HOST=http://kibana:5601
-    #   - ELASTICSEARCH_USERNAME=elastic
-    #   - ELASTICSEARCH_PASSWORD=changeme
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:7.10.0
+    container_name: metricbeat
+    hostname: metricbeat
+    # user: root
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - ./metricbeat/config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+      # - /:/hostfs:ro
+    networks:
+      - elastic
+
 networks:
   elastic:
     driver: bridge
@@ -136,3 +143,4 @@ volumes:
   elasticsearch_data:
   elasticsearch_data_2:
   elasticsearch_data_3:
+  filebeat_data:
