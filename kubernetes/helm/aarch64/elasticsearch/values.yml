@@ -30,15 +30,6 @@ volumeClaimTemplate:
 persistence:
   enabled: true
 
-nodeAffinity:
-  requiredDuringSchedulingIgnoredDuringExecution:
-    nodeSelectorTerms:
-      - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: NotIn
-            values:
-              - slave-node-2
-
 replicas: 3
 minimumMasterNodes: 3
 

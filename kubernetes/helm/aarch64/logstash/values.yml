@@ -34,12 +34,3 @@ volumeClaimTemplate:
   selector:
     matchLabels:
       type: hostpath
-
-nodeAffinity:
-  requiredDuringSchedulingIgnoredDuringExecution:
-    nodeSelectorTerms:
-      - matchExpressions:
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-              - slave-node-2
