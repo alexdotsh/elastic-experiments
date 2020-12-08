@@ -13,4 +13,6 @@ helm install logstash elastic/logstash -n elastic -f "${PWD}/helm/aarch64/logsta
 sleep 30
 
 # Install Kibana
-helm install kibana elastic/kibana -n elastic -f "${PWD}/helm/aarch64/kibana/values.yml"
+helm install kibana elastic/kibana -n elastic -f "${PWD}/helm/x86-64/kibana/values.yml"
+
+helm install apm-server elastic/apm-server -n elastic -f "${PWD}/helm/x86-64/apm-server/values.yml"
