@@ -22,3 +22,10 @@ resources:
   limits:
     cpu: "1000m"
     memory: "2Gi"
+
+readinessProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  successThreshold: 3
+  timeoutSeconds: 5
