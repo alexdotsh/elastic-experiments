@@ -14,9 +14,16 @@ services:
     container_name: elasticsearch
     environment:
       - "NODE_NAME=elasticsearch"
-      - "INITIAL_MASTER_NODES=elasticsearch,elasticsearch_2,elasticsearch_3"
-      - "SEED_HOSTS=elasticsearch_2,elasticsearch_3"
+      # - "INITIAL_MASTER_NODES=elasticsearch,elasticsearch_2,elasticsearch_3"
+      # - "SEED_HOSTS=elasticsearch_2,elasticsearch_3"
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      # - APM_SYSTEM_PASSWORD=${APM_SYSTEM_PASSWORD}
+      # - KIBANA_SYSTEM_PASSWORD=${KIBANA_SYSTEM_PASSWORD}
+      # - KIBANA_PASSWORD=${KIBANA_PASSWORD}
+      # - LOGSTASH_SYSTEM_PASSWORD=${LOGSTASH_SYSTEM_PASSWORD}
+      # - BEATS_SYSTEM_PASSWORD=${BEATS_SYSTEM_PASSWORD}
+      # - REMOTE_MONITORING_USER_PASSWORD=${REMOTE_MONITORING_USER_PASSWORD}
+      # - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
     ports:
       - 9200:9200
     volumes:
@@ -135,6 +142,27 @@ services:
       # - /:/hostfs:ro
     networks:
       - elastic
+
+  # bootstrap:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+  #   container_name: bootstrap
+  #   hostname: bootstrap
+  #   environment:
+  #     - APM_SYSTEM_PASSWORD=${APM_SYSTEM_PASSWORD}
+  #     - KIBANA_SYSTEM_PASSWORD=${KIBANA_SYSTEM_PASSWORD}
+  #     - KIBANA_PASSWORD=${KIBANA_PASSWORD}
+  #     - LOGSTASH_SYSTEM_PASSWORD=${LOGSTASH_SYSTEM_PASSWORD}
+  #     - BEATS_SYSTEM_PASSWORD=${BEATS_SYSTEM_PASSWORD}
+  #     - REMOTE_MONITORING_USER_PASSWORD=${REMOTE_MONITORING_USER_PASSWORD}
+  #     - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+  #   depends_on:
+  #     elasticsearch:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ./bootstrap.sh:/usr/local/bin/bootstrap.sh:ro
+  #   command: ['/bin/bash', '-c', '/usr/local/bin/bootstrap.sh']
+  #   networks:
+  #     - elastic
 
 networks:
   elastic:
